@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة التفاحة و 1xbet Login</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #1d2b53, #3a58aa);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        /* رصيد الحساب واسم المستخدم في أعلى الصفحة */
+        .balance-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4a69c1;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+        }
+
+        /* عرض المبلغ الذي تم الفوز به */
+        .winning-amount {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #32cd32;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 6px;
+            display: none;
+            z-index: 9999;
+        }
+
+        /* Game styles */
+        .game-container {
+            background-color: #24386a;
+            width: 380px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .game-container h1 {
+            font-size: 26px;
+            font-weight: bold;
+            color: #f7f7f7;
+            margin-bottom: 30px;
+        }
+
+        .apple-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-items: center;
+            margin-bottom: 20px;
+        }
+
+        .apple {
+            width: 80px;
+            height: 80px;
+            background: #ff0000;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .apple:hover {
+            transform: scale(1.1);
+        }
+
+        .apple-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .apple-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff9900;
+        }
+
+        .restart-button {
+            padding: 12px 20px;
+            background-color: #4a69c1;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .restart-button:hover {
+            background-color: #3a58aa;
+        }
+
+        /* التكبير صفحة الدخول */
+        .login-container {
+            background-color: #24386a;
+            width: 400px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        .login-container h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f7f7f7;
+            margin-bottom: 30px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4a69c1;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-container button:hover {
+            background-color: #3a58aa;
+        }
+
+        .additional-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .additional-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* إظهار زر اللعب من جديد */
+        .replay-button {
+            padding: 12px 20px;
+            background-color: #4a69c1;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: none;
+        }
+
+        .replay-button:hover {
+            background-color: #3a58aa;
+        }
+
+        /* أزرار الاختيارات */
+        .amount-selection {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .amount-selection button {
+            padding: 10px 20px;
+            background-color: #4a69c1;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .amount-selection button:hover {
+            background-color: #3a58aa;
+        }
+
+        /* نافذة منبثقة كبيرة لرسالة الخصم */
+        .popup-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 50px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 10000;
+            width: 60%;
+        }
+
+        .popup-message button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .popup-message button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- رصيد الحساب واسم المستخدم في أعلى الصفحة -->
+    <div class="balance-container" id="balanceContainer" style="display: none;">
+        <span>الاسم: <span id="userName"></span> | رصيد حسابي: <span id="balanceAmount">0</span> EGP</span>
+    </div>
+
+    <!-- عرض المبلغ الذي تم الفوز به -->
+    <div class="winning-amount" id="winningAmount" style="display: none;">
+        فزت بمبلغ: <span id="wonAmount">0</span> EGP
+    </div>
+
+    <!-- Login Section -->
+    <div class="login-container" id="loginContainer">
+        <h1>1xbet Login</h1>
+        <form id="loginForm">
+            <input type="text" id="usernameInput" name="username" placeholder="اسم المستخدم" required>
+            <input type="password" id="passwordInput" name="password" placeholder="كلمة المرور" required>
+            <button type="submit">تسجيل الدخول</button>
+        </form>
+
+        <div class="additional-links">
+            <a href="#">نسيت كلمة المرور؟</a>
+            <a href="#">إنشاء حساب</a>
+        </div>
+
+        <div class="payment-request">
+            الرجاء دفع 500 جنيه لاستلام السكربت.
+        </div>
+    </div>
+
+    <!-- Game Section -->
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <h1>لعبة التفاحة</h1>
+
+        <!-- اختيار المبلغ -->
+        <div class="amount-selection" id="amountSelection">
+            <button onclick="chooseAmount(50)">اللعب بمبلغ 50</button>
+            <button onclick="chooseAmount(100)">اللعب بمبلغ 100</button>
+            <button onclick="chooseAmount(200)">اللعب بمبلغ 200</button>
+            <button onclick="chooseAmount(500)">اللعب بمبلغ 500</button>
+            <button onclick="chooseAmount(1000)">اللعب بمبلغ 1000</button>
+        </div>
+
+        <div class="apple-container" id="appleContainer">
+            <!-- التفاحات سيتم إضافتها ديناميكيًا عبر جافا سكربت -->
+        </div>
+
+        <div class="result" id="resultMessage"></div>
+
+        <button class="restart-button" id="restartButton" onclick="restartGame()">ابدأ من جديد</button>
+
+        <button class="replay-button" id="exitButton" onclick="exitGame()">خروج بالمكسب</button>
+    </div>
+
+    <!-- نافذة منبثقة للرسالة -->
+    <div id="popupMessage" class="popup-message">
+        <p>لقد تم خصم المبلغ كاملاً لأنك قد تكون Hacker</p>
+        <button onclick="closePopup()">إغلاق</button>
+    </div>
+
+    <script>
+        let username = '';
+        let balance = 0;
+        let selectedAmount = 0; // المبلغ الذي تم اختياره
+        let playCount = 0; // لعدد المحاولات
+        let appleStatuses = []; // لتخزين حالة التفاحات
+
+        // الحد الأقصى للمكسب
+        const MAX_BALANCE = 10000;
+
+        // الدالة التي تتحقق من كلمة المرور وتوجه المستخدم للصفحة الجديدة
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            username = event.target.username.value;
+            const password = event.target.password.value;
+
+            if (password) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('gameContainer').style.display = 'block';
+                document.getElementById('balanceContainer').style.display = 'block';
+                document.getElementById('userName').textContent = username;
+            } else {
+                alert('الرجاء إدخال كلمة المرور!');
+            }
+        });
+
+        // تحديد المبلغ الذي تم اختياره
+        function chooseAmount(amount) {
+            if (balance + amount > MAX_BALANCE) {
+                alert('لقد وصلت إلى الحد الأقصى للمكسب (10000 EGP). لا يمكنك زيادة المبلغ أكثر.');
+                return;
+            }
+
+            selectedAmount = amount;
+            document.getElementById('amountSelection').style.display = 'none';
+            updateAppleStatus(); // تحديث حالة التفاحات
+        }
+
+        // تحديث حالة التفاحات
+        function updateAppleStatus() {
+            const appleContainer = document.getElementById('appleContainer');
+            appleContainer.innerHTML = ''; // إفراغ التفاحات الحالية
+
+            appleStatuses = []; // إعادة تعيين حالات التفاحات
+
+            // تحديد التفاحات العشوائية السليمة والبايظة
+            const randomIndices = [];
+            while (randomIndices.length < 2) {
+                const randomIndex = Math.floor(Math.random() * 6);
+                if (!randomIndices.includes(randomIndex)) {
+                    randomIndices.push(randomIndex);
+                }
+            }
+
+            for (let i = 0; i < 6; i++) {
+                const apple = document.createElement('div');
+                apple.classList.add('apple');
+                apple.innerHTML = `<div class="apple-status" id="apple${i + 1}Status">${randomIndices.includes(i) ? 'سليمة' : 'بايظة'}</div><div class="apple-number">${i + 1}</div>`;
+                apple.style.backgroundColor = randomIndices.includes(i) ? '#00ff00' : '#ff0000'; // تحديد اللون
+                apple.onclick = randomIndices.includes(i) ? () => handleWin(i) : () => handleLoss(i);
+                appleContainer.appendChild(apple);
+            }
+        }
+
+        // دالة عند فوز اللاعب
+        function handleWin(index) {
+            document.getElementById('resultMessage').textContent = 'مبروك، لقد فزت!';
+            balance += selectedAmount;
+            if (balance > MAX_BALANCE) {
+                balance = MAX_BALANCE; // التأكد من عدم تجاوز الحد الأقصى
+            }
+            document.getElementById('wonAmount').textContent = balance;
+            document.getElementById('winningAmount').style.display = 'block';
+            document.getElementById('exitButton').style.display = 'block';
+        }
+
+        // دالة عند خسارة اللاعب
+        function handleLoss(index) {
+            document.getElementById('resultMessage').textContent = 'للأسف، لقد خسرت.';
+            document.getElementById('wonAmount').textContent = 0;
+            document.getElementById('winningAmount').style.display = 'none';
+            document.getElementById('exitButton').style.display = 'none';
+        }
+
+        // إعادة اللعبة
+        function restartGame() {
+            document.getElementById('resultMessage').textContent = '';
+            document.getElementById('amountSelection').style.display = 'flex';
+            document.getElementById('appleContainer').innerHTML = '';
+            document.getElementById('wonAmount').textContent = '';
+            document.getElementById('winningAmount').style.display = 'none';
+            document.getElementById('exitButton').style.display = 'none';
+            playCount = 0;
+        }
+
+        // خروج بالمكسب
+        function exitGame() {
+            if (balance === MAX_BALANCE) {
+                alert('لقد وصلت إلى الحد الأقصى للمكسب. يمكنك الآن مغادرة اللعبة!');
+            }
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('balanceContainer').style.display = 'none';
+
+            // عرض رسالة الخصم
+            document.getElementById('popupMessage').style.display = 'block';
+        }
+
+        // إغلاق نافذة الخصم
+        function closePopup() {
+            document.getElementById('popupMessage').style.display = 'none';
+            alert('خروج من اللعبة. المكسب هو: ' + balance + ' EGP');
+        }
+    </script>
+
+</body>
+
+</html>
